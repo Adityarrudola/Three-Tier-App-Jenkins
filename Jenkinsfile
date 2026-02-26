@@ -95,7 +95,7 @@ pipeline {
             }
         }
     }
-    
+
     post {
         success {
             emailext(
@@ -108,7 +108,7 @@ pipeline {
                     <p><b>URL:</b> ${env.BUILD_URL}</p>
                 """,
                 mimeType: 'text/html',
-                to: 'your-email@gmail.com'
+                to: 'aditya.rudola@quokkalabs.com'
             )
         }
 
