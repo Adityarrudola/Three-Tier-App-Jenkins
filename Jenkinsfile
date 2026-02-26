@@ -8,6 +8,7 @@ pipeline {
         ACI_NAME = "react-app-container"
     }
 
+    
     stages {
 
         stage('Approve Build') {
