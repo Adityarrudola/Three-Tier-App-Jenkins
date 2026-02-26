@@ -40,10 +40,10 @@ pipeline {
         stage('Build Image') {
             steps {
                 sh """
-                docker build \
-                -t ${IMAGE_NAME} \
-                -t ${DOCKER_REPO}:latest \
-                .
+                docker build --no-cache \
+                  -t ${IMAGE_NAME} \
+                  -t ${DOCKER_REPO}:latest \
+                  .
                 """
             }
         }
