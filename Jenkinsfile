@@ -59,36 +59,33 @@ pipeline {
 
         stage('Deploy to Azure Container Instances') {
             steps {
-                withCredentials([azureServicePrincipal(
-                    credentialsId: 'azure-service-principal',
-                    subscriptionIdVariable: 'AZ_SUB',
-                    clientIdVariable: 'AZ_CLIENT',
-                    clientSecretVariable: 'AZ_SECRET',
-                    tenantIdVariable: 'AZ_TENANT'
-                )]) {
+                withCredentials([
+                    string(credentialsId: 'azure-client-id', variable: 'AZ_CLIENT'),
+                    string(credentialsId: 'azure-client-secret', variable: 'AZ_SECRET'),
+                    string(credentialsId: 'azure-tenant-id', variable: 'AZ_TENANT'),
+                    string(credentialsId: 'azure-subscription-id', variable: 'AZ_SUB')
+                ]) {
 
                     sh """
                     az login --service-principal \
-                      -u $AZ_CLIENT \
-                      -p $AZ_SECRET \
-                      --tenant $AZ_TENANT
+                    -u $AZ_CLIENT \
+                    -p $AZ_SECRET \
+                    --tenant $AZ_TENANT
 
                     az account set --subscription $AZ_SUB
 
-                    # Delete old container safely
                     az container delete \
-                      --resource-group ${RESOURCE_GROUP} \
-                      --name ${ACI_NAME} \
-                      --yes || true
+                    --resource-group ${RESOURCE_GROUP} \
+                    --name ${ACI_NAME} \
+                    --yes || true
 
-                    # Create new container
                     az container create \
-                      --resource-group ${RESOURCE_GROUP} \
-                      --name ${ACI_NAME} \
-                      --image ${IMAGE_NAME} \
-                      --dns-name-label react-app-${BUILD_NUMBER} \
-                      --ports 80 \
-                      --restart-policy Always
+                    --resource-group ${RESOURCE_GROUP} \
+                    --name ${ACI_NAME} \
+                    --image ${IMAGE_NAME} \
+                    --dns-name-label react-app-${BUILD_NUMBER} \
+                    --ports 80 \
+                    --restart-policy Always
                     """
                 }
             }
