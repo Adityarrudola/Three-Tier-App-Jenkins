@@ -85,6 +85,7 @@ pipeline {
                     --image ${IMAGE_NAME} \
                     --dns-name-label react-app-${BUILD_NUMBER} \
                     --ports 80 \
+                    --os-type Linux \
                     --restart-policy Always
                     """
                 }
