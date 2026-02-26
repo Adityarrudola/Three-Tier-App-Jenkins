@@ -37,14 +37,22 @@ pipeline {
             }
         }
 
-        stage('Build & Push Image') {
+        stage('Build Image') {
             steps {
                 sh """
-                docker buildx build \
-                  --platform linux/amd64 \
-                  -t ${IMAGE_NAME} \
-                  -t ${DOCKER_REPO}:latest \
-                  --push .
+                docker build \
+                -t ${IMAGE_NAME} \
+                -t ${DOCKER_REPO}:latest \
+                .
+                """
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh """
+                docker push ${IMAGE_NAME}
+                docker push ${DOCKER_REPO}:latest
                 """
             }
         }
