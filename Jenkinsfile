@@ -56,15 +56,15 @@ pipeline {
                 """
             }
         }
-
         stage('Deploy to Azure Container Instances') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'azure-client-id', variable: 'AZ_CLIENT'),
-                    string(credentialsId: 'azure-client-secret', variable: 'AZ_SECRET'),
-                    string(credentialsId: 'azure-tenant-id', variable: 'AZ_TENANT'),
-                    string(credentialsId: 'azure-subscription-id', variable: 'AZ_SUB')
-                ]) {
+                withCredentials([azureServicePrincipal(
+                    credentialsId: 'azure-sp',
+                    subscriptionIdVariable: 'AZ_SUB',
+                    clientIdVariable: 'AZ_CLIENT',
+                    clientSecretVariable: 'AZ_SECRET',
+                    tenantIdVariable: 'AZ_TENANT'
+                )]) {
 
                     sh """
                     az login --service-principal \
@@ -90,5 +90,7 @@ pipeline {
                 }
             }
         }
+        
+        
     }
 }
